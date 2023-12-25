@@ -1,6 +1,9 @@
 package com.example.bookapp.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookapp.LoadingDialogBar;
 import com.example.bookapp.MyApplication;
+import com.example.bookapp.activity.PdfEditActivity;
 import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.RowBookAdminBinding;
 import com.example.bookapp.databinding.RowCategoryBinding;
@@ -48,12 +53,16 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
 
     private FilterBookAdmin filterBookAdmin;
 
+    private LoadingDialogBar loadingDialogBar;
+
     private static final String TAG = "BOOK_ADAPTER_TAG";
 
     public AdapterBookAdmin(Context context, ArrayList<ModelBook> bookArrayList) {
         this.context = context;
         this.bookArrayList = bookArrayList;
         this.filterList = bookArrayList;
+
+        loadingDialogBar = new LoadingDialogBar(context);
     }
 
     public void setFilterList(ArrayList<ModelBook> filterList) {
@@ -97,6 +106,89 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
         loadCategory(book, holder);
         loadPdfFromUrl(book, holder);
         loadPdfSize(book, holder);
+
+        rowBookAdminBinding.moreBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moreOptionsDialog(book,holder);
+            }
+        });
+    }
+
+    private void moreOptionsDialog(ModelBook book, HolderBookAdmin holder) {
+        String bookId = book.getId();
+        String bookUrl = book.getUrlPdf();
+        String bookTitle = book.getBookTitle();
+        String bookDescription = book.getBookDescription();
+        String bookCategoryId = book.getCategoryId();
+
+        String[] options = {"Edit", "Delete"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle("Choose Options")
+                .setItems(options,new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0){ //edit
+                            Intent intent = new Intent(context, PdfEditActivity.class);
+                            intent.putExtra("bookId",bookId);
+                            intent.putExtra("bookUrl",bookUrl);
+                            intent.putExtra("bookTitle",bookTitle);
+                            intent.putExtra("bookTitle",bookTitle);
+                        } else if (which == 1) { //delete
+                            deleteBook(book,holder);
+                        }
+                    }
+                }).show();
+    }
+
+    private void deleteBook(ModelBook book, HolderBookAdmin holder) {
+        String bookId = book.getId();
+        String bookUrl = book.getUrlPdf();
+        String bookTitle = book.getBookTitle();
+
+        Log.d(TAG, "deleteBook: Deleting ...");
+
+        loadingDialogBar.showDialog("Deleting "+bookTitle);
+
+        Log.d(TAG, "deleteBook: deleting book from storage");
+
+        StorageReference storageReference = FirebaseStorage.getInstance("gs://book-app-5a1f1.appspot.com").getReferenceFromUrl(bookUrl);
+        storageReference.delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        DatabaseReference reference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Books");
+
+                        reference.child(bookId)
+                                .removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+                                        Log.d(TAG, "onSuccess: deleted book");
+                                        loadingDialogBar.hideDialog();
+                                        Toast.makeText(context,"Delete book successfully",Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        loadingDialogBar.hideDialog();
+                                        Log.d(TAG, "onFailure: "+e.getMessage());
+                                        Toast.makeText(context,"Error: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: "+e.getMessage());
+                        loadingDialogBar.hideDialog();
+                        Toast.makeText(context,"Error: "+e.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                });
 
     }
 
