@@ -1,11 +1,6 @@
 package com.example.bookapp.authentication;
 
-import android.content.Intent;
-import android.widget.Toast;
-
-import com.example.bookapp.DashboardUserActivity;
 import com.example.bookapp.LoadingDialogBar;
-import com.example.bookapp.RegisterActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;

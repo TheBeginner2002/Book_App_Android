@@ -1,14 +1,14 @@
-package com.example.bookapp;
+package com.example.bookapp.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.bookapp.LoadingDialogBar;
 import com.example.bookapp.databinding.ActivityCategoryAddBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;

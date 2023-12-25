@@ -3,6 +3,7 @@ package com.example.bookapp.adapter;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.bookapp.activity.PdfListAdminActivity;
 import com.example.bookapp.databinding.RowCategoryBinding;
 import com.example.bookapp.filter.FilterCategory;
 import com.example.bookapp.model.ModelCategory;
@@ -89,6 +91,16 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
                                 dialogInterface.dismiss();
                             }
                         }).show();
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PdfListAdminActivity.class);
+                intent.putExtra("categoryId", id);
+                intent.putExtra("categoryTitle",category);
+                context.startActivity(intent);
             }
         });
     }
