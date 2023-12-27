@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookapp.LoadingDialogBar;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityPdfAddBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -137,7 +138,7 @@ public class PdfAddActivity extends AppCompatActivity {
 
         String filePathAndName = "Book/" + timestamp;
 
-        StorageReference storageReference = FirebaseStorage.getInstance("gs://book-app-5a1f1.appspot.com").getReference(filePathAndName);
+        StorageReference storageReference = FirebaseStorage.getInstance(Constants.FIREBASE_STORAGE_LINK).getReference(filePathAndName);
         storageReference.putFile(pdfUri)
                 .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
@@ -177,8 +178,10 @@ public class PdfAddActivity extends AppCompatActivity {
         hashMap.put("categoryId", ""+selectedCategoryId);
         hashMap.put("urlPdf", ""+uploadPdfUrl);
         hashMap.put("timestamp", timestamp);
+        hashMap.put("viewsCount", (long)0);
+        hashMap.put("downloadsCount", (long)0);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Books");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Books");
         databaseReference.child(""+timestamp)
                 .setValue(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -202,7 +205,7 @@ public class PdfAddActivity extends AppCompatActivity {
         categoryTitleArrayList = new ArrayList<>();
         categoryIdArrayList = new ArrayList<>();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Categories");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

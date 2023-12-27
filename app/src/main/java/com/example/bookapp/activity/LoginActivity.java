@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookapp.LoadingDialogBar;
+import com.example.bookapp.authentication.AuthenticationClass;
 import com.example.bookapp.databinding.ActivityLoginBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,9 +30,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private String email = "", password = "";
 
-    private FirebaseAuth firebaseAuth;
-
-    private LoadingDialogBar loadingDialogBar;
+    private AuthenticationClass authenticationClass;
 
 
     @Override
@@ -40,9 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         activityLoginBinding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(activityLoginBinding.getRoot());
 
-        loadingDialogBar = new LoadingDialogBar(this);
-
-        firebaseAuth = FirebaseAuth.getInstance();
+        authenticationClass = new AuthenticationClass(this);
 
         activityLoginBinding.noAccountTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,52 +67,8 @@ public class LoginActivity extends AppCompatActivity {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             Toast.makeText(this, "Invalid email pattern ...!", Toast.LENGTH_SHORT).show();
         } else {
-            loginUser();
+            authenticationClass.loginUser(email,password);
         }
     }
 
-    private void loginUser() {
-        loadingDialogBar.showDialog("Login");
-
-        firebaseAuth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-            @Override
-            public void onSuccess(AuthResult authResult) {
-                checkUser();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                loadingDialogBar.hideDialog();
-                Toast.makeText(LoginActivity.this, "Error: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void checkUser() {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Users");
-
-        databaseReference.child(firebaseUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String userType = ""+snapshot.child("userType").getValue();
-                loadingDialogBar.hideDialog();
-                if (userType.equals("user")){
-                    startActivity(new Intent(LoginActivity.this, DashboardUserActivity.class));
-                    finish();
-                } else if (userType.equals("admin")) {
-                    startActivity(new Intent(LoginActivity.this, DashboardAdminActivity.class));
-                    finish();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                loadingDialogBar.hideDialog();
-                Toast.makeText(LoginActivity.this, "Error: "+error.getMessage(),Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
 }

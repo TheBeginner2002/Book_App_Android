@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookapp.activity.PdfListAdminActivity;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.RowCategoryBinding;
 import com.example.bookapp.filter.FilterCategory;
 import com.example.bookapp.model.ModelCategory;
@@ -108,7 +109,7 @@ public class AdapterCategory extends RecyclerView.Adapter<AdapterCategory.Holder
     private void deleteCategory(ModelCategory categoryData, HolderCategory holder) {
         String id = categoryData.getId();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Categories");
+        DatabaseReference reference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
 
         reference.child(id).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override

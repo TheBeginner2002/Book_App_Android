@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.example.bookapp.adapter.AdapterCategory;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityDashboardAdminBinding;
 import com.example.bookapp.model.ModelCategory;
 import com.google.firebase.auth.FirebaseAuth;
@@ -92,7 +93,7 @@ public class DashboardAdminActivity extends AppCompatActivity {
         //init array list
         categoryArrayList = new ArrayList<>();
         //get category from database
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Categories");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -105,6 +106,8 @@ public class DashboardAdminActivity extends AppCompatActivity {
                     ModelCategory model = ds.getValue(ModelCategory.class);
 
                     categoryArrayList.add(model);
+
+
                 }
 
                 //setup adapter

@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.bookapp.LoadingDialogBar;
 import com.example.bookapp.MyApplication;
+import com.example.bookapp.activity.PdfDetailActivity;
 import com.example.bookapp.activity.PdfEditActivity;
 import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.RowBookAdminBinding;
@@ -96,7 +97,7 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
         String title = book.getBookTitle();
         String description = book.getBookDescription();
         long timestamp = book.getTimestamp();
-
+        String bookId = book.getId();
         String formattedDate = MyApplication.formatTimestamp(timestamp);
 
         holder.bookTitle.setText(title);
@@ -107,10 +108,19 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
         loadPdfFromUrl(book, holder);
         loadPdfSize(book, holder);
 
-        rowBookAdminBinding.moreBtn.setOnClickListener(new View.OnClickListener() {
+        holder.moreBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 moreOptionsDialog(book,holder);
+            }
+        });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, PdfDetailActivity.class);
+                intent.putExtra("bookId", bookId);
+                context.startActivity(intent);
             }
         });
     }
@@ -136,6 +146,7 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
                             intent.putExtra("bookUrl",bookUrl);
                             intent.putExtra("bookTitle",bookTitle);
                             intent.putExtra("bookTitle",bookTitle);
+                            context.startActivity(intent);
                         } else if (which == 1) { //delete
                             deleteBook(book,holder);
                         }
@@ -154,12 +165,12 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
 
         Log.d(TAG, "deleteBook: deleting book from storage");
 
-        StorageReference storageReference = FirebaseStorage.getInstance("gs://book-app-5a1f1.appspot.com").getReferenceFromUrl(bookUrl);
+        StorageReference storageReference = FirebaseStorage.getInstance(Constants.FIREBASE_STORAGE_LINK).getReferenceFromUrl(bookUrl);
         storageReference.delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        DatabaseReference reference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Books");
+                        DatabaseReference reference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Books");
 
                         reference.child(bookId)
                                 .removeValue()
@@ -196,7 +207,7 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
 
         String pdfUrl = book.getUrlPdf();
 
-        StorageReference reference = FirebaseStorage.getInstance("gs://book-app-5a1f1.appspot.com").getReferenceFromUrl(pdfUrl);
+        StorageReference reference = FirebaseStorage.getInstance(Constants.FIREBASE_STORAGE_LINK).getReferenceFromUrl(pdfUrl);
         reference.getMetadata()
                 .addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                     @Override
@@ -229,7 +240,7 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
     private void loadCategory(ModelBook book, HolderBookAdmin holder) {
         String pdfUrl = book.getUrlPdf();
         Log.d(TAG, "loadCategory: "+pdfUrl);
-        StorageReference reference = FirebaseStorage.getInstance("gs://book-app-5a1f1.appspot.com").getReferenceFromUrl(pdfUrl);
+        StorageReference reference = FirebaseStorage.getInstance(Constants.FIREBASE_STORAGE_LINK).getReferenceFromUrl(pdfUrl);
 
         reference.getBytes(Constants.MAX_BYTES_PDF)
                 .addOnSuccessListener(new OnSuccessListener<byte[]>() {
@@ -276,7 +287,7 @@ public class AdapterBookAdmin extends RecyclerView.Adapter<AdapterBookAdmin.Hold
     private void loadPdfFromUrl(ModelBook book, HolderBookAdmin holder) {
         String categoryId = book.getCategoryId();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Categories");
+        DatabaseReference reference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
         reference.child(categoryId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

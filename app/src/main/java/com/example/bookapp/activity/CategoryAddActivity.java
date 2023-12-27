@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookapp.LoadingDialogBar;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityCategoryAddBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -78,7 +79,7 @@ public class CategoryAddActivity extends AppCompatActivity {
         hashMap.put("uid",firebaseAuth.getUid());
 
         //add to db
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Categories");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
         databaseReference.child(""+timestamp).setValue(hashMap).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
