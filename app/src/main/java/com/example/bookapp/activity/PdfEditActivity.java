@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.bookapp.LoadingDialogBar;
 import com.example.bookapp.R;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityPdfEditBinding;
 import com.example.bookapp.model.ModelCategory;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -99,7 +100,7 @@ public class PdfEditActivity extends AppCompatActivity {
         hashMap.put("bookDescription",bookDescription);
         hashMap.put("categoryId",selectedCategoryId);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Books");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Books");
 
         databaseReference.child(bookId).updateChildren(hashMap)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -122,7 +123,7 @@ public class PdfEditActivity extends AppCompatActivity {
 
     private void loadBookInfo() {
         Log.d(TAG, "loadBookInfo: loading book info");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Books");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Books");
 
         databaseReference.child(bookId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -136,7 +137,7 @@ public class PdfEditActivity extends AppCompatActivity {
                 activityPdfEditBinding.descriptionEt.setText(bookDescription);
 
                 Log.d(TAG, "onDataChange: loading category book info");
-                DatabaseReference categoriesReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Categories");
+                DatabaseReference categoriesReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
 
                 categoriesReference.child(selectedCategoryId)
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -167,7 +168,7 @@ public class PdfEditActivity extends AppCompatActivity {
         categoryTitleArrayList = new ArrayList<>();
         categoryIdArrayList = new ArrayList<>();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app/").getReference("Categories");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Categories");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

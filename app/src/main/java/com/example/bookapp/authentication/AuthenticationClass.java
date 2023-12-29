@@ -3,6 +3,7 @@ package com.example.bookapp.authentication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -176,4 +177,22 @@ public class AuthenticationClass {
             });
         }
     }
+    public void checkEmailUser(TextView textView) {
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        if (firebaseUser == null){
+            Intent intent = new Intent(context,MainActivity.class);
+            context.startActivity(intent);
+            ((Activity)context).finish();
+        } else {
+            String email = firebaseUser.getEmail();
+
+            textView.setText(email);
+        }
+    }
+
+    public void logout(){
+        firebaseAuth.signOut();
+    }
+
 }

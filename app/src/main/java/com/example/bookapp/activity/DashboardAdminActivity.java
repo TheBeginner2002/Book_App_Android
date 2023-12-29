@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.View;
 
 import com.example.bookapp.adapter.AdapterCategory;
+import com.example.bookapp.authentication.AuthenticationClass;
 import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityDashboardAdminBinding;
 import com.example.bookapp.model.ModelCategory;
@@ -27,11 +28,11 @@ public class DashboardAdminActivity extends AppCompatActivity {
 
     private ActivityDashboardAdminBinding activityDashboardAdminBinding;
 
-    private FirebaseAuth firebaseAuth;
-
     private ArrayList<ModelCategory> categoryArrayList;
 
     private AdapterCategory adapterCategory;
+
+    private AuthenticationClass authenticationClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +40,16 @@ public class DashboardAdminActivity extends AppCompatActivity {
         activityDashboardAdminBinding = ActivityDashboardAdminBinding.inflate(getLayoutInflater());
         setContentView(activityDashboardAdminBinding.getRoot());
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        authenticationClass = new AuthenticationClass(this);
 
-        checkUser();
+        authenticationClass.checkEmailUser(activityDashboardAdminBinding.subTitleTv);
         loadCategories();
 
         activityDashboardAdminBinding.logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                firebaseAuth.signOut();
-                checkUser();
+                authenticationClass.logout();
+                authenticationClass.checkEmailUser(activityDashboardAdminBinding.subTitleTv);
             }
         });
 
@@ -124,19 +125,5 @@ public class DashboardAdminActivity extends AppCompatActivity {
         });
     }
 
-    private void checkUser() {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
-        if (firebaseUser == null){
-            Intent intent = new Intent(DashboardAdminActivity.this,MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            String email = firebaseUser.getEmail();
-
-            activityDashboardAdminBinding.subTitleTv.setText(email);
-
-
-        }
-    }
 }

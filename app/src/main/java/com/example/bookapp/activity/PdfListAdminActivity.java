@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.example.bookapp.R;
 import com.example.bookapp.adapter.AdapterBookAdmin;
+import com.example.bookapp.constants.Constants;
 import com.example.bookapp.databinding.ActivityPdfListAdminBinding;
 import com.example.bookapp.model.ModelBook;
 import com.google.firebase.database.DataSnapshot;
@@ -82,7 +83,7 @@ public class PdfListAdminActivity extends AppCompatActivity {
     private void loadPdfList() {
         books = new ArrayList<>();
 
-        DatabaseReference reference = FirebaseDatabase.getInstance("https://book-app-5a1f1-default-rtdb.asia-southeast1.firebasedatabase.app").getReference("Books");
+        DatabaseReference reference = FirebaseDatabase.getInstance(Constants.FIREBASE_DATABASE_LINK).getReference("Books");
         Log.d(TAG, "loadPdfList: "+reference.toString());
         reference.orderByChild("categoryId")
                 .equalTo(categoryId)
