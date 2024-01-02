@@ -34,7 +34,7 @@
     </RelativeLayout>
     <!--Content-->
     <ScrollView
-        android:layout_above="@id/readBtn"
+        android:layout_above="@id/bookOptionLl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbarRl"
@@ -196,15 +196,40 @@
         </LinearLayout>
 
     </ScrollView>
-
-    <Button
-        android:id="@+id/readBtn"
+    
+    <LinearLayout
+        android:id="@+id/bookOptionLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="Read"
-        android:minHeight="48dp"
-        android:drawableTop="@drawable/ic_menu_book_black"
-        />
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/readBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Read"
+            android:layout_weight="1"
+            android:minHeight="48dp"
+            android:drawableTop="@drawable/ic_menu_book_black"
+            android:background="@color/design_default_color_primary"
+            />
+
+        <Button
+            android:id="@+id/downloadBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Download"
+            android:layout_weight="1"
+            android:minHeight="48dp"
+            android:drawableTop="@drawable/ic_download_black"
+            android:background="@color/design_default_color_primary"
+            />
+
+    </LinearLayout>
+    
+
 
 </RelativeLayout>

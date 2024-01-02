@@ -1,7 +1,9 @@
 package com.example.bookapp;
 
 import android.app.Application;
+import android.content.Context;
 import android.text.format.DateFormat;
+import android.util.Log;
 
 
 import java.util.Calendar;
@@ -24,6 +26,4 @@ public class MyApplication extends Application {
 
         return date;
     }
-
-
 }
