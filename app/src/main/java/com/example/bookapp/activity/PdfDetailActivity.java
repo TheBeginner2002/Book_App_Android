@@ -3,6 +3,7 @@ package com.example.bookapp.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -39,6 +40,8 @@ public class PdfDetailActivity extends AppCompatActivity {
         handleData = new HandleData(this);
 
         handleData.incrementBookViewCount(bookId);
+
+        loadBookDetails();
         activityPdfDetailBinding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -46,7 +49,15 @@ public class PdfDetailActivity extends AppCompatActivity {
             }
         });
 
-        loadBookDetails();
+        activityPdfDetailBinding.readBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(PdfDetailActivity.this, PdfViewActivity.class);
+                intent.putExtra("bookId",bookId);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void loadBookDetails() {

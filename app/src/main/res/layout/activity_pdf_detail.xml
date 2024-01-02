@@ -34,6 +34,7 @@
     </RelativeLayout>
     <!--Content-->
     <ScrollView
+        android:layout_above="@id/readBtn"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbarRl"
@@ -193,8 +194,17 @@
                 android:textColor="@color/black"/>
 
         </LinearLayout>
-        
 
     </ScrollView>
+
+    <Button
+        android:id="@+id/readBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="Read"
+        android:minHeight="48dp"
+        android:drawableTop="@drawable/ic_menu_book_black"
+        />
 
 </RelativeLayout>
