@@ -3,6 +3,8 @@ package com.example.bookapp.authentication;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Debug;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,9 +13,7 @@ import androidx.annotation.NonNull;
 import com.example.bookapp.LoadingDialogBar;
 import com.example.bookapp.activity.DashboardAdminActivity;
 import com.example.bookapp.activity.DashboardUserActivity;
-import com.example.bookapp.activity.LoginActivity;
 import com.example.bookapp.activity.MainActivity;
-import com.example.bookapp.activity.SplashActivity;
 import com.example.bookapp.constants.Constants;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,20 +36,23 @@ public class AuthenticationClass {
 
     private LoadingDialogBar loadingDialogBar;
 
+    private String TAG = "AUTHENTICATION_TAG";
+
     public AuthenticationClass(Context context) {
         this.firebaseAuth = FirebaseAuth.getInstance();
         this.context = context;
         this.loadingDialogBar = new LoadingDialogBar(context);
     }
 
-    public void createUserAcc(String email, String password, String name) {
+    public void createUserAcc(String email, String password, String name, String selectedAccType) {
         loadingDialogBar.showDialog("Create User");
         //create acc
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        updateUserInfo(name, email);
+                        loadingDialogBar.hideDialog();
+                        updateUserInfo(name, email, selectedAccType);
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -61,10 +64,10 @@ public class AuthenticationClass {
                 });
     }
 
-    private void updateUserInfo(String name, String email) {
+    private void updateUserInfo(String name, String email, String selectedAccType) {
         loadingDialogBar.showDialog("Add user to db");
         long timestamp = System.currentTimeMillis();
-
+        Log.d(TAG, "updateUserInfo: "+selectedAccType);
         //get id of user
         String uid = firebaseAuth.getUid();
 
@@ -74,7 +77,7 @@ public class AuthenticationClass {
         hashMap.put("name", name);
         hashMap.put("email", email);
         hashMap.put("profileImage", "");
-        hashMap.put("userType", "user"); //user & admin
+        hashMap.put("userType", selectedAccType); //user & admin
         hashMap.put("timestamp", timestamp);
 
         //set data to db
@@ -88,7 +91,12 @@ public class AuthenticationClass {
                         loadingDialogBar.hideDialog();
                         Toast.makeText(context, "Account Created!",Toast.LENGTH_SHORT).show();
 
-                        context.startActivity(new Intent(context, DashboardUserActivity.class));
+                        if(selectedAccType == "user"){
+                            context.startActivity(new Intent(context, DashboardUserActivity.class));
+                        } else if (selectedAccType == "admin") {
+                            context.startActivity(new Intent(context, DashboardAdminActivity.class));
+                        }
+
                         ((Activity)context).finish();//destroy this activity
                     }
                 })

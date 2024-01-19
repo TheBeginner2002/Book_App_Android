@@ -107,13 +107,32 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!--Type-->
+            <TextView
+                android:id="@+id/typeAccTv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:layout_below="@id/emailTil"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shape_edittext01"
+                android:drawableStart="@drawable/ic_category_gray"
+                android:drawableEnd="@drawable/ic_down_gray"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="Account Type"
+                android:padding="10dp"
+                android:textColorHint="@color/gray01"
+                android:textColor="@color/black"
+                android:textSize="16sp"/>
+
             <!--Password-->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordTil"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:passwordToggleEnabled="true"
-                android:layout_below="@+id/emailTil"
+                android:layout_below="@+id/typeAccTv"
                 android:layout_marginTop="5dp"
                 app:hintEnabled="false">
 
